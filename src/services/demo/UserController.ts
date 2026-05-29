@@ -52,6 +52,17 @@ export async function login(
     ...(options || {}),
   });
 }
+/** 此处后端没有提供注释 POST /api/v1/user */
+export async function menuList(
+  params?: API.FieldType,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result_UserInfo_>('/api/v1/menuList', {
+    method: 'GET',
+    params: { ...params },
+    ...(options || {}),
+  });
+}
 /** 此处后端没有提供注释 GET /api/v1/user/${param0} */
 export async function getUserDetail(
   params: {

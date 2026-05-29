@@ -3,24 +3,19 @@ import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import React from 'react';
 import { history } from 'umi';
-const { login } = services.UserController;
+const { login, menuList } = services.UserController;
 
 const onFinish: FormProps<API.FieldType>['onFinish'] = async (values) => {
-  console.log('Success:', values);
-  const { data, code } = (await login({ ...values })) || {};
-  localStorage.setItem('userInfo', data?.list);
+  const { data = {}, code } = (await login({ ...values })) || {};
+  localStorage.setItem('userInfo', JSON.stringify(data));
   if (code === 200) {
+    // 获取菜单
+    const { data } = await menuList();
+    console.log(data);
     history.push({
       pathname: '/Home',
     });
   }
-  console.log(data);
-};
-
-const onFinishFailed: FormProps<API.FieldType>['onFinishFailed'] = (
-  errorInfo,
-) => {
-  console.log('Failed:', errorInfo);
 };
 
 const Login: React.FC = () => (
@@ -31,7 +26,6 @@ const Login: React.FC = () => (
     style={{ maxWidth: 600 }}
     initialValues={{ remember: true }}
     onFinish={onFinish}
-    onFinishFailed={onFinishFailed}
     autoComplete="off"
   >
     <Form.Item<API.FieldType>
