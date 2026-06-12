@@ -1,13 +1,15 @@
 import avator from '@/assets/user.png';
 import { EditOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Dropdown, Image, Layout, MenuProps } from 'antd';
+import { Dropdown, Image, Layout, Menu, MenuProps } from 'antd';
 import 'moment/locale/zh-cn';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'umi';
 import styles from './index.less';
 const { Header, Sider, Content } = Layout;
 
 export default () => {
   const { user } = JSON.parse(localStorage.getItem('userInfo') || '');
+  const [menu, setMenu] = useState<API.MenuListSiderItemType[]>([]);
   const handleLoginOut = () => {
     console.log('退出登录');
   };
@@ -34,6 +36,36 @@ export default () => {
 C:表示目录
 M:表示菜单
  */
+
+  const handleMenuData = (menuList: API.MenuListItemType[]) => {
+    const menu: API.MenuListSiderItemType[] = menuList
+      .map((item) => {
+        if (item.type === 'C') {
+          return {
+            key: item.path,
+            icon: item.icon,
+            label: item.name,
+            children: item.children ? handleMenuData(item.children) : [],
+          };
+        }
+        if (item.type === 'M') {
+          return {
+            key: item.path,
+            icon: item.icon,
+            label: item.name,
+          };
+        }
+        return null;
+      })
+      .filter((item): item is API.MenuListSiderItemType => item !== null);
+    return menu;
+  };
+  useEffect(() => {
+    const menuList = JSON.parse(localStorage.getItem('menuList') || '[]');
+    console.log(menuList);
+    const menu = handleMenuData(menuList);
+    setMenu(menu);
+  }, []);
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -48,7 +80,13 @@ M:表示菜单
   ];
   return (
     <Layout className={styles.layout}>
-      <Sider className={styles.sider}>Sider</Sider>
+      <Sider className={styles.sider}>
+        <Menu
+          items={menu as MenuProps['items']}
+          mode="inline"
+          // theme="dark"
+        />
+      </Sider>
       <Layout>
         <Header className={styles.header}>
           <div className={styles.userInfo}>

@@ -25,7 +25,7 @@ export default {
           type: 'C',
           id: 1,
           path: '/organization', // ✅ 补充：目录对应的基础路径
-          icon: 'TeamOutlined', // ✅ 补充：菜单图标
+          icon: '<CarOutlined />', // ✅ 补充：菜单图标
           sort: 1, // ✅ 补充：排序序号
           visible: true, // ✅ 补充：是否显示（软删除/启用禁用）
           children: [
@@ -36,7 +36,31 @@ export default {
               type: 'M',
               component: '/organization/deptManage',
               path: '/organization/menuManage', // ✅ 补充：路由路径
-              icon: 'MenuOutlined', // ✅ 补充：菜单图标
+              // icon: '<CarOutlined />', // ✅ 补充：菜单图标
+              sort: 1, // ✅ 补充：排序
+              children: [
+                {
+                  id: 1,
+                  name: '增加',
+                  permissKey: 'organization:add',
+                  type: 'B',
+                },
+                {
+                  id: 2,
+                  name: '查看',
+                  permissKey: 'organization:view',
+                  type: 'B',
+                },
+              ],
+            },
+            {
+              id: 12,
+              parentId: 1,
+              name: '组织管理',
+              type: 'M',
+              component: '/organization/originManage',
+              path: '/organization/originManage', // ✅ 补充：路由路径
+              // icon: '<CarryOutOutlined />', // ✅ 补充：菜单图标
               sort: 1, // ✅ 补充：排序
               children: [
                 {

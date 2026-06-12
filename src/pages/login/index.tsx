@@ -5,16 +5,38 @@ import React from 'react';
 import { history } from 'umi';
 const { login, menuList } = services.UserController;
 
+const getPermission = (menuList: API.MenuListItemType[]) => {
+  const permission: string[] = [];
+  const traverseMenu = (menus: API.MenuListItemType[]) => {
+    menus.forEach((menu) => {
+      if (menu.type === 'B' && menu.permissKey) {
+        permission.push(menu.permissKey);
+      }
+      if (menu.children && menu.children.length > 0) {
+        traverseMenu(menu.children);
+      }
+    });
+  };
+  traverseMenu(menuList);
+  return permission;
+};
+const getMenuList = async () => {
+  // 获取菜单
+  const { data } = await menuList();
+  localStorage.setItem('menuList', JSON.stringify(data));
+  const permission = data ? getPermission(data as API.MenuListItemType[]) : [];
+  localStorage.setItem('permission', JSON.stringify(permission));
+  // menuList
+  // 菜单权限
+  history.push({
+    pathname: '/Home',
+  });
+};
 const onFinish: FormProps<API.FieldType>['onFinish'] = async (values) => {
   const { data = {}, code } = (await login({ ...values })) || {};
   localStorage.setItem('userInfo', JSON.stringify(data));
   if (code === 200) {
-    // 获取菜单
-    const { data } = await menuList();
-    console.log(data);
-    history.push({
-      pathname: '/Home',
-    });
+    getMenuList();
   }
 };
 

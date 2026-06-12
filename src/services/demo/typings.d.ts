@@ -69,4 +69,21 @@ declare namespace API {
     password?: string;
   };
   type definitions_0 = null;
+  interface MenuListItemType {
+    name: string;
+    type: string;
+    id: number;
+    path: string;
+    icon: number;
+    sort: number;
+    visible: boolean;
+    permissKey?: string;
+    children: MenuListItemType[];
+  }
+  interface MenuListSiderItemType {
+    key: string;
+    icon: number;
+    label: string;
+    children?: MenuListSiderItemType[];
+  }
 }
